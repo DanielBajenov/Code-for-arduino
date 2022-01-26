@@ -1,0 +1,174 @@
+// C++ code
+// Daniel Bajenov
+// Traffic Light 2022
+
+int southr = 12;
+int yellow = 11;
+int southg = 10;
+int EWred = 2;
+int EWylw = 3;
+int EWgrn = 4;
+int northg = 9;
+int northr = 13;
+int pedr = 7;
+int pedg = 6;
+int blue = 8;
+int photo = 0;
+int cnt = 1;
+int cnt2 = 1;
+int button = 5;
+int buttonPressed = 0;
+int buttonClicked = 1;
+
+
+
+
+
+
+/*void buttonDelay(int delayTime){
+  for(int i = 0; i <= delayTime; i++){
+    delay(100);
+    if (buttonClicked == 0){
+      int EWon = digitalRead(EWgrn);
+      if (EWon == LOW){
+        digitalWrite(EWgrn, LOW);
+        digitalWrite(EWylw, HIGH);
+        delay(2000);
+        digitalWrite(EWylw, LOW);
+        digitalWrite(EWred, HIGH);
+        digitalWrite(pedr, LOW);
+        digitalWrite(pedg, HIGH);}
+      else{
+        digitalWrite(pedr, LOW);
+        digitalWrite(pedg, HIGH);}
+      if (buttonClicked == 1){
+        continue;}
+    }
+  }
+}*/
+
+void setup()
+{
+  pinMode(blue, OUTPUT);
+  pinMode(southr, OUTPUT);
+  pinMode(yellow, OUTPUT);
+  pinMode(southg, OUTPUT);
+  pinMode(EWred, OUTPUT);
+  pinMode(EWylw, OUTPUT);
+  pinMode(EWgrn, OUTPUT);
+  pinMode(northg, OUTPUT);
+  pinMode(northr, OUTPUT);
+  pinMode(pedr, OUTPUT);
+  pinMode(pedg, OUTPUT);
+  pinMode(photo, INPUT);
+  pinMode(button, INPUT);
+  digitalWrite(southr, HIGH);
+  digitalWrite(EWred, HIGH);
+  digitalWrite(northr, HIGH);
+  digitalWrite(pedr, HIGH);
+  Serial.begin(9600);
+}
+
+
+void loop()
+{
+  int light = analogRead(photo);
+  light = map(light, 0, 900, 0, 255);
+  light = constrain(light, 0, 255);
+  
+  while (light < 120){
+    noCar();}
+
+  while (light > 120){
+  	car();}
+ }
+
+void car(){
+  int cnt = 0;
+  
+  delay(2000);
+  clicked();
+  digitalWrite(northr, LOW);
+  while (cnt < 7){
+    clicked();
+    digitalWrite(northg, HIGH);
+    delay(1000);
+    digitalWrite(northg, LOW);
+    delay(1000);
+    cnt++;}
+  Serial.print(buttonClicked);
+  if (buttonClicked == 0){
+    digitalWrite(pedg, HIGH);
+    digitalWrite(pedr, LOW);
+  	buttonClicked = 1;}
+  digitalWrite(southr, LOW);
+  digitalWrite(southg, HIGH);
+  digitalWrite(northg, HIGH);
+  clicked();
+  delay(5000); 
+  digitalWrite(southg, LOW);
+  digitalWrite(northg, LOW);
+  digitalWrite(pedg, LOW);
+  digitalWrite(pedr, HIGH);
+  digitalWrite(yellow, HIGH);
+  clicked();
+  delay(2000); // Wait for 1000 millisecond(s)
+  digitalWrite(yellow, LOW);
+  digitalWrite(southr, HIGH);
+  digitalWrite(northr, HIGH);
+  clicked();
+  delay(2000);
+  digitalWrite(EWred, LOW);
+  digitalWrite(EWgrn, HIGH);
+  clicked();
+  delay(5000); // Wait for 1000 millisecond(s)
+  digitalWrite(EWgrn, LOW);
+  digitalWrite(EWylw, HIGH);
+  clicked();
+  delay(2000); // Wait for 1000 millisecond(s)
+  digitalWrite(EWylw, LOW);
+  digitalWrite(EWred, HIGH);
+  digitalWrite(northr, HIGH);}
+
+void noCar(){
+  delay(2000);
+  clicked();
+  cnt = 0;
+  cnt2 = 0;
+  if (buttonClicked == 0){
+    digitalWrite(pedg, HIGH);
+    digitalWrite(pedr, LOW);
+  	buttonClicked = 1;}
+  digitalWrite(southr, LOW);
+  digitalWrite(northr, LOW);
+  digitalWrite(southg, HIGH);
+  digitalWrite(northg, HIGH);
+  clicked();
+  delay(5000);
+  digitalWrite(southg, LOW);
+  digitalWrite(northg, LOW);
+  digitalWrite(yellow, HIGH);
+  clicked();
+  delay(2000); // Wait for 1000 millisecond(s)
+  digitalWrite(yellow, LOW);
+  digitalWrite(southr, HIGH);
+  digitalWrite(northr, HIGH);
+  clicked();
+  delay(2000); 
+  digitalWrite(EWred, LOW);
+  digitalWrite(EWgrn, HIGH);
+  clicked();
+  delay(5000); // Wait for 1000 millisecond(s)
+  digitalWrite(EWgrn, LOW);
+  digitalWrite(EWylw, HIGH);
+  clicked();
+  delay(2000);  // Wait for 1000 millisecond(s)
+  digitalWrite(EWylw, LOW);
+  digitalWrite(EWred, HIGH);
+  digitalWrite(northr, HIGH);}
+
+void clicked(){
+  buttonPressed = digitalRead(button);
+  if (buttonPressed == LOW){
+    buttonClicked = 0;}
+}
