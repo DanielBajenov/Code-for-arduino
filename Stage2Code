@@ -1,0 +1,100 @@
+// C++ code
+//
+
+int southr = 12;
+int southy = 11;
+int southg = 10;
+int EWred = 2;
+int EWylw = 3;
+int EWgrn = 4;
+int northg = 9;
+int northr = 13; 
+int photo = 0;
+int cnt = 1;
+
+void setup()
+{
+  pinMode(southr, OUTPUT);
+  pinMode(southy, OUTPUT);
+  pinMode(southg, OUTPUT);
+  pinMode(EWred, OUTPUT);
+  pinMode(EWylw, OUTPUT);
+  pinMode(EWgrn, OUTPUT);
+  pinMode(northg, OUTPUT);
+  pinMode(northr, OUTPUT);
+  pinMode(photo, INPUT);
+  digitalWrite(12, HIGH);
+  digitalWrite(2, HIGH);
+  digitalWrite(13, HIGH);
+}
+
+void loop()
+{
+  int light = analogRead(photo);
+  light = map(light, 0, 900, 0, 255);
+  light = constrain(light, 0, 255);
+  
+  
+  while (light < 120){
+    delay(2000);
+    cnt = 0;
+    digitalWrite(southr, LOW);
+    digitalWrite(northr, LOW);
+    digitalWrite(southg, HIGH);
+    digitalWrite(northg, HIGH);
+    delay(5000); // Wait for 1000 millisecond(s)
+    digitalWrite(southg, LOW);
+    digitalWrite(northg, LOW);
+    digitalWrite(southy, HIGH);
+    delay(2000); // Wait for 1000 millisecond(s)
+    digitalWrite(southy, LOW);
+    digitalWrite(southr, HIGH);
+    digitalWrite(northr, HIGH);
+    delay(2000);
+    digitalWrite(EWred, LOW);
+    digitalWrite(EWgrn, HIGH);
+    delay(5000); // Wait for 1000 millisecond(s)
+    digitalWrite(EWgrn, LOW);
+    digitalWrite(EWylw, HIGH);
+    delay(2000); // Wait for 1000 millisecond(s)
+    digitalWrite(EWylw, LOW);
+    digitalWrite(EWred, HIGH);
+    digitalWrite(northr, HIGH);
+    break;
+  	}
+
+  while (light > 120){
+    int cnt = 0;
+    delay(2000);
+    digitalWrite(northr, LOW);
+    while (cnt < 7){
+      digitalWrite(northg, HIGH);
+      delay(1000);
+      digitalWrite(northg, LOW);
+      delay(1000);
+      cnt++;}
+    digitalWrite(southr, LOW);
+    digitalWrite(northr, LOW);
+    digitalWrite(southg, HIGH);
+    digitalWrite(northg, HIGH);
+    delay(5000); // Wait for 1000 millisecond(s)
+    digitalWrite(southg, LOW);
+    digitalWrite(northg, LOW);
+    digitalWrite(southy, HIGH);
+    delay(2000); // Wait for 1000 millisecond(s)
+    digitalWrite(southy, LOW);
+    digitalWrite(southr, HIGH);
+    digitalWrite(northr, HIGH);
+    delay(2000);
+    digitalWrite(EWred, LOW);
+    digitalWrite(EWgrn, HIGH);
+    delay(5000); // Wait for 1000 millisecond(s)
+    digitalWrite(EWgrn, LOW);
+    digitalWrite(EWylw, HIGH);
+    delay(2000); // Wait for 1000 millisecond(s)
+    digitalWrite(EWylw, LOW);
+    digitalWrite(EWred, HIGH);
+    digitalWrite(northr, HIGH);
+    break;
+  }
+}
