@@ -1,0 +1,185 @@
+// C++ code
+// Daniel Bajenov
+// Traffic Light 2022
+
+int southr = 12; //Sets a variable/name for the south red LED
+int yellow = 11; //Sets a variable/name for both yellow LED
+int southg = 10; //Sets a variable/name for the south green LED
+int northg = 9; //Sets a variable/name for the north green LED
+int northr = 13; //Sets a variable/name for the north red LED
+int EWred = 2; //Sets a variable/name for the East & West red LED
+int EWylw = 3; //Sets a variable/name for the East & West yellow LED
+int EWgrn = 4; //Sets a variable/name for the East & West green LED
+int pedr = 7; //Sets a variable/name for the pedestrian red LED
+int pedg = 6; //Sets a variable/name for the pedestrian green LED
+int piezo = 8; //Sets a variable/name for the piezo
+int photo = 0; //Sets a variable/name for the photoresistor
+int button = 5; //Sets a variable/name for the button
+int cnt = 1; //Sets a variable/count for the blinking light loop
+int cnt2 = 1; //Sets a variable/count for the beeping buzzer loop
+int buttonPressed = 0; //Sets a variable to read the button
+int buttonClicked = 1; //Sets a variable to save if the button has been clicked
+int skip = 0; //Sets a variable to skip the 5 second delay after green
+
+void setup() //Setting up the game (outputs and starting settings)
+{
+  pinMode(piezo, OUTPUT); //Set the piezo to an output pin
+  pinMode(southr, OUTPUT); //Set the south red LED to an output pin
+  pinMode(yellow, OUTPUT); //Set the yellow LED to an output pin
+  pinMode(southg, OUTPUT); //Set the south green LED to an output pin
+  pinMode(EWred, OUTPUT); //Set the East & West red LED to an output pin
+  pinMode(EWylw, OUTPUT); //Set the East & West yellow LED to an output pin
+  pinMode(EWgrn, OUTPUT); //Set the East & West green LED to an output pin
+  pinMode(northg, OUTPUT); //Set the north green LED to an output pin
+  pinMode(northr, OUTPUT); //Set the north red LED to an output pin
+  pinMode(pedr, OUTPUT); //Set the pedestrian red LED to an output pin
+  pinMode(pedg, OUTPUT); //Set the pedestrian green LED to an output pin
+  pinMode(photo, INPUT); //Set the photoresistor pin to input
+  pinMode(button, INPUT); //Set the button pin to input
+  digitalWrite(southr, HIGH); //Start south red LED on
+  digitalWrite(EWred, HIGH); //Start East & West red led on
+  digitalWrite(northr, HIGH); //Start north red LED on
+  digitalWrite(pedr, HIGH); // Start red pedestrian LED on
+  Serial.begin(9600); //Starts the serial monitor
+}
+
+
+void loop()
+{
+  int light = analogRead(photo); //set the variable to read the photoresistor
+  light = map(light, 0, 900, 0, 255); //map the photoresistor from 0-900 to 0-255
+  light = constrain(light, 0, 255); //makes sure it is at 0-255
+  
+  while (light < 120){ // if the light is less than 120 (there is a car)
+    skip = 0; // resets the variable
+    delays(200); //uses the function that delays the code but also reads the button
+    clicked(); //checks if the button is pressed
+    cnt = 0; //resets the variable
+    digitalWrite(southr, LOW); //sets the LED to off
+    digitalWrite(northr, LOW); //sets the LED to off
+    digitalWrite(southg, HIGH); //sets the LED to ON
+    digitalWrite(northg, HIGH); //sets the LED to ON
+    if (buttonClicked == 0){ //11:59 did not finish commenting
+      digitalWrite(pedg, HIGH);
+      digitalWrite(pedr, LOW);
+      buttonClicked = 1;
+      cnt2 = 0;
+      skip = 0;
+      while (cnt2 < 5){
+        digitalWrite(piezo, HIGH);
+        delays(100);
+        digitalWrite(piezo, LOW);
+        delays(100);
+        cnt2++;
+        skip = 1;}
+    }
+    clicked();
+    if (skip == 0){
+      delays(500);} 
+    digitalWrite(southg, LOW);
+    digitalWrite(northg, LOW);
+    digitalWrite(pedr, HIGH);
+    digitalWrite(pedg, LOW);
+    digitalWrite(yellow, HIGH);
+    clicked();
+    delays(200); // Wait for 1000 millisecond(s)
+    digitalWrite(yellow, LOW);
+    digitalWrite(southr, HIGH);
+    digitalWrite(northr, HIGH);
+    clicked();
+    delays(200); 
+    digitalWrite(EWred, LOW);
+    digitalWrite(EWgrn, HIGH);
+    clicked();
+    delays(500); // Wait for 1000 millisecond(s)
+    digitalWrite(EWgrn, LOW);
+    digitalWrite(EWylw, HIGH);
+    clicked();
+    delays(200);  // Wait for 1000 millisecond(s)
+    digitalWrite(EWylw, LOW);
+    digitalWrite(EWred, HIGH);
+    digitalWrite(northr, HIGH);
+    break;
+  }
+
+  while (light > 120){
+  	skip = 0;
+  int cnt = 0;
+  delays(200);
+  clicked();
+  digitalWrite(northr, LOW);
+  while (cnt < 7){
+    clicked();
+    digitalWrite(northg, HIGH);
+    delays(100);
+    digitalWrite(northg, LOW);
+    delays(100);
+    cnt++;}
+  Serial.print(buttonClicked);
+  if (buttonClicked == 0){
+    digitalWrite(pedg, HIGH);
+    digitalWrite(pedr, LOW);
+    digitalWrite(southr, LOW);
+    digitalWrite(southg, HIGH);
+    digitalWrite(northg, HIGH);
+  	buttonClicked = 1;
+    cnt2 = 0;
+    
+    while (cnt2 < 5){
+      digitalWrite(piezo, HIGH);
+      delays(100);
+      digitalWrite(piezo, LOW);
+      delays(100);
+      cnt2++;
+      skip = 1;}
+    } 
+  digitalWrite(southr, LOW);
+  digitalWrite(southg, HIGH);
+  digitalWrite(northg, HIGH);
+  clicked();
+  if (skip == 0){
+    delays(500);} 
+  digitalWrite(southg, LOW);
+  digitalWrite(northg, LOW);
+  digitalWrite(pedg, LOW);
+  digitalWrite(pedr, HIGH);
+  digitalWrite(yellow, HIGH);
+  clicked();
+  delays(200); // Wait for 1000 millisecond(s)
+  digitalWrite(yellow, LOW);
+  digitalWrite(southr, HIGH);
+  digitalWrite(northr, HIGH);
+  clicked();
+  delays(200);
+  digitalWrite(EWred, LOW);
+  digitalWrite(EWgrn, HIGH);
+  clicked();
+  delays(500); // Wait for 1000 millisecond(s)
+  digitalWrite(EWgrn, LOW);
+  digitalWrite(EWylw, HIGH);
+  clicked();
+  delays(200); // Wait for 1000 millisecond(s)
+  digitalWrite(EWylw, LOW);
+  digitalWrite(EWred, HIGH);
+  digitalWrite(northr, HIGH);
+  break;}
+  
+  
+}
+
+
+
+void delays(int delayTime){
+  for (int i = 0;i <= delayTime;i++){
+    delay(10);
+    buttonPressed = digitalRead(button);
+  	if (buttonPressed == LOW){
+      buttonClicked = 0;}
+  	}
+}
+void clicked(){
+  buttonPressed = digitalRead(button);
+  if (buttonPressed == LOW){
+    buttonClicked = 0;}
+
+}
